@@ -25,17 +25,15 @@
 
   async function loadNewData() {
 
-    console.log("loading new data");
-    console.log('selected: ',selected);
+    //console.log("loading new data");
+    //console.log('selected: ',selected);
 
     if (selected == "all"){
-      console.log("fetching all goals")
       goalsToDisplay = data.goals;
     } else {
-      console.log("fetching specific goals: ",selected);
       goalsToDisplay  = data.goals.filter((goal) => goal.status == selected);
     }
-    console.log("to display: ",goalsToDisplay);
+    
 
     const earliestStart = Math.min(
       ...goalsToDisplay

@@ -15,10 +15,9 @@
   
     onMount(async () => {
       data = await loadData();
-      console.log(data);
-      console.log(goalId);
+      
       goal = data.goals.find(g => g.id === goalId);
-      console.log("goal: ",goal);
+     //
     });
   
     async function toggleAction(taskId: string, dayIndex: number) {
