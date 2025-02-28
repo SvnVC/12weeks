@@ -17,7 +17,7 @@
       data = await loadData();
       
       goal = data.goals.find(g => g.id === goalId);
-     //
+     
     });
   
     async function toggleAction(taskId: string, dayIndex: number) {
