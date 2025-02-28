@@ -52,7 +52,7 @@
           {#each goal.weeks[week] as task (task.id)}
          
             <div class="space-y-2">
-              <h2 class="text-lg font-semibold text-gray-900">{task.title || 'Unnamed Task'}</h2>
+              <h2 class="text-lg font-semibold text-gray-900">{task.title || 'Unnamed Task'} - {task.done.filter(t => t === true).length}/{task.frequency}</h2>
               <div class="grid grid-cols-7 gap-2">
                 {#each ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as day, i}
                   <div class="flex flex-col items-center">
