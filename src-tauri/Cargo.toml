@@ -1,8 +1,8 @@
 [package]
-name = "svc"
+name = "twelveweeks"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Track your 12 week years."
+authors = ["Sven Van Cleemput"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

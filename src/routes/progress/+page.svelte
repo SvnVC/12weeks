@@ -5,6 +5,7 @@
   import { loadData } from '$lib/storage';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { PenSolid } from 'flowbite-svelte-icons';
 
   let data: Vision = { vision: '', created: '', updated: '', goals: [] };
   let activeGoals: Goal[] = [];
@@ -115,12 +116,15 @@
 
           <!-- Dynamic Week Tasks -->
           <div class="mb-6">
-            <span class="text-sm font-medium text-gray-700">
-              Tasks - Week {hoveredWeeks[goal.id] !== null ? hoveredWeeks[goal.id] + 1 : currentWeeks[goal.id] + 1} 
-            </span>
-            <Helper>Hover week for details</Helper>
-            
-            <div class="h-40 overflow-auto">
+            <div class="flex justify-between mb-4">
+              <span class="text-sm font-medium text-gray-700">
+                Tasks - Week {hoveredWeeks[goal.id] !== null ? hoveredWeeks[goal.id] + 1 : currentWeeks[goal.id] + 1} 
+              </span>
+              <div>
+                <Button color="light" href="/goals/{goal.id}/week/{hoveredWeeks[goal.id] ?? currentWeek}/actions" pill><PenSolid class="w-4 h-4"/></Button>
+              </div>
+          </div>
+            <div class="h-48 overflow-auto">
             {#each getWeekProgress(goal, (hoveredWeeks[goal.id] ?? currentWeeks[goal.id]).toString()) as { total, done, percentage, tasks }}
             
               {#if tasks.length > 0}
