@@ -3,7 +3,7 @@
     export const prerender = false; // Disable prerendering
     import  Nav  from '$lib/components/nav.svelte';
     import { page } from '$app/state';
-    import { CaretLeftSolid } from 'flowbite-svelte-icons';
+    import { CaretLeftSolid, CircleMinusSolid, CirclePlusSolid } from 'flowbite-svelte-icons';
     import { goto } from '$app/navigation';
     import { Button, Toggle, Select, Datepicker, Label, Input, Textarea } from 'flowbite-svelte';
     import { onMount } from 'svelte';
@@ -81,12 +81,16 @@
     
     
     <Nav/>
+
+    <main class="m-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Edit goal</h1>
+
     <Button color="alternative" on:click={()=>goto('/')}><CaretLeftSolid/> Back</Button>
 
     
   
 
-    <div class="m-4">
+    <div class="mt-4">
     {#if data}
     
 
@@ -113,7 +117,10 @@
         
         <div class="flex mb-4">
             <div class="w-1/2">
+              <div class="flex justify-between">
               <Label>Tactics</Label>
+              <Button on:click={addTactic}><CirclePlusSolid color="green"/></Button>
+            </div>
               
               {#each goal.tactics as tactic, index}
                 <div class="flex">
@@ -121,18 +128,21 @@
                     <Input bind:value={tactic.description}></Input>
                   </div>
                   <div class="w-1/5">
-                    <Button color="red" on:click={() => removeTactic(index)}
-                      >X</Button>
+                    <Button on:click={() => removeTactic(index)}
+                      ><CircleMinusSolid color="red"/></Button>
                   </div>
                 </div>
               {/each}
         
-              <Button color="blue" on:click={addTactic}>+</Button>
+              
         
         
             </div>
             <div class="w-1/2">
+              <div class="flex justify-between">
               <Label>Measurable outcomes</Label>
+              <Button on:click={addOutcome}><CirclePlusSolid color="green"/></Button>
+            </div>
         
               {#each goal.outcomes as outcome, index}
                 <div class="flex">
@@ -140,26 +150,28 @@
                     <Input bind:value={outcome.description}></Input>
                   </div>
                   <div class="w-1/5">
-                    <Button color="red" on:click={() => removeOutcome(index)}>X</Button>
+                    <Button on:click={() => removeOutcome(index)}><CircleMinusSolid color="red"/></Button>
                   </div>
                 </div>
                 
                 
               {/each}
           
-               <Button color="blue" on:click={addOutcome}>+</Button>
+               
             </div>
           </div>
 
 
-
+          <div class="flex justify-end gap-6">
+            <Button color="alternative" on:click={()=>goto('/')}><CaretLeftSolid/> Back</Button>
         <Button color="green" on:click={()=> {updateData()}}>Update</Button>
         <Button color="red" on:click={deleteGoal}>Delete</Button>
+      </div>
 
     {/if}
 </div>
     
-    
+</main>
     
     
     

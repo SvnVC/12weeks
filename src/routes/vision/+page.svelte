@@ -29,16 +29,19 @@
     </script>
 
     <Nav/>
-
+    <main class="mx-auto p-6 min-h-screen">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Vision</h1>
     <div class="m-6">
 
-        <h5 class="font-bold text-lg">Vision</h5>
-        <Helper class="mb-6">Describe your long term vision. Where do you see yourself in 1, 3 or 5 years time?</Helper>
+       
+        <p class="mb-6">Describe your long term vision. Where do you see yourself in 1, 3 or 5 years time?</p>
         {#if data}
         
             <Textarea bind:value={data.vision}></Textarea>
 
         {/if}
 
-        <Button color="blue" on:click={update}>Update</Button>
+        <Button class="mt-4 w-full" color="blue" on:click={update}>Update</Button>
     </div>
+
+    </main>

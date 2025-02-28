@@ -25,9 +25,9 @@ export async function saveData(data: Vision): Promise<void> {
     });
 
     await writeTextFile(fileName, json, { baseDir: BaseDirectory.AppData });
-    console.log('Successfully saved to $APPDATA/app_data.json');
+    //console.log('Successfully saved to $APPDATA/app_data.json');
   } catch (e) {
-    console.error('Save error:', e);
+    //console.error('Save error:', e);
     throw e;
   }
 }
@@ -35,12 +35,12 @@ export async function saveData(data: Vision): Promise<void> {
 export async function loadData(): Promise<Vision> {
   try {
     
-    console.log('Attempting to read from $APPDATA/app_data.json');
+    //console.log('Attempting to read from $APPDATA/app_data.json');
     const json = await readTextFile(fileName, { baseDir: BaseDirectory.AppData });
-    console.log('Successfully read from $APPDATA/app_data.json');
+    //console.log('Successfully read from $APPDATA/app_data.json');
     return JSON.parse(json) as Vision;
   } catch (e) {
-    console.warn('Load error, returning default:', e);
+    //console.warn('Load error, returning default:', e);
     return { vision: '', created:'', updated:'', goals:[] };
   }
 }
