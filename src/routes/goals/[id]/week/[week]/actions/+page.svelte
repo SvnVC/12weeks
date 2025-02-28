@@ -15,7 +15,6 @@
   
     onMount(async () => {
       data = await loadData();
-      
       goal = data.goals.find(g => g.id === goalId);
      
     });
