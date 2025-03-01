@@ -21,6 +21,7 @@
     { value: "planned", name: "Show planned" },
     { value: "archived", name: "Show archived" },
   ];
+  
   let selected:string = 'all'; // default set to all
 
   async function loadNewData() {
