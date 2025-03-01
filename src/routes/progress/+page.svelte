@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Vision, Goal } from "$lib/types";
   import { Card, Progressbar, Button, Badge, Select } from "flowbite-svelte";
-  import Nav from "$lib/components/Nav.svelte";
+  import Nav from "$lib/components/nav.svelte";
   import { loadData } from "$lib/storage";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
