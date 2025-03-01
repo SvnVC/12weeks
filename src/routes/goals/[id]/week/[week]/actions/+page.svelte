@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Vision, Goal, Task } from '$lib/types';
     import { Card, Checkbox, Button } from 'flowbite-svelte';
-    import Nav from '$lib/components/Nav.svelte';
+    import Nav from '$lib/components/nav.svelte';
     import { page } from '$app/stores';
     import { loadData, saveData } from '$lib/storage';
     import { onMount } from 'svelte';
