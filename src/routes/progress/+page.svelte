@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { PenSolid } from "flowbite-svelte-icons";
+  import { extractCurrentWeek } from "$lib/utils/utils";
 
   let data: Vision = { vision: "", created: "", updated: "", goals: [] };
   let activeGoals: Goal[] = [];
@@ -21,7 +22,7 @@
     { value: "planned", name: "Show planned" },
     { value: "archived", name: "Show archived" },
   ];
-  
+
   let selected:string = 'all'; // default set to all
 
   async function loadNewData() {
@@ -53,11 +54,8 @@
       hoveredWeeks[goal.id] = null;
       const diffMs = Date.now() - new Date(goal.startDate).getTime();
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const currentWeek = Math.min(
-        Math.max(Math.ceil(diffDays / 7) - 1, 0),
-        11,
-      ); // 0-11
-      currentWeeks[goal.id] = currentWeek;
+      const currentWeekIndex = extractCurrentWeek(goal) - 1;
+      currentWeeks[goal.id] = currentWeekIndex;
     });
    
   }

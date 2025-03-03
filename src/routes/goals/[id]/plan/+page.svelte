@@ -9,6 +9,7 @@
     import { CaretLeftSolid, QrCodeOutline } from 'flowbite-svelte-icons';
     import { goto } from "$app/navigation";
     import { checkPermissions } from "@tauri-apps/api/core";
+    import { extractCurrentWeek } from "$lib/utils/utils";
 
     let goalID:string = page.params.id;
 
@@ -31,7 +32,7 @@
         // extract the weeks
         //weeks = goal.weeks;
 
-        currentWeekIndex = getCurrentWeekIndex();
+        currentWeekIndex = extractCurrentWeek(goal) - 1;
         accordionColours =  getAccordionColours();
 
     });
@@ -90,23 +91,6 @@
 
     const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-    function getCurrentWeekIndex():number{
-        let started = new Date(goal.startDate);
-        let now = new Date();
-
-        // 
-        // Calculate the difference in milliseconds
-        const diffMs = now.getTime() - started.getTime();
-
-        // Convert to days
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-        // Calculate week number (starting at 1, not 0)
-        const weekNumber = Math.ceil(diffDays / 7) || 1; // Ensure at least 1
-
-        // Cap at 12 weeks
-        return Math.min(Math.max(weekNumber, 1), 12) - 1;
-    }
 
     function getAccordionColours():string[]  {
 
@@ -140,7 +124,8 @@
 
         let newTasks = previousTasks.map(task => ({
             ...task,
-            id: crypto.randomUUID()
+            id: crypto.randomUUID(),
+            done: [false, false, false, false, false, false, false]
         }));
 
         // import to current week
