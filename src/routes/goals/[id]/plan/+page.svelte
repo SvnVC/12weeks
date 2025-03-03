@@ -143,7 +143,7 @@
 
 <Nav />
 <main class="m-6">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Plan goal</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Plan</h1>
 
 <div class="m-6">
     <Button color="alternative" on:click={()=>goto('/')}><CaretLeftSolid/> Back</Button>
