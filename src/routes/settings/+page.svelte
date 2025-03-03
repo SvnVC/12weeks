@@ -104,7 +104,7 @@
     let app_data_dir: string = "";
     async function dir(): Promise<string> {
         app_data_dir = await appDataDir();
-        console.log(app_data_dir);
+        // console.log(app_data_dir);
         return app_data_dir;
     }
 
