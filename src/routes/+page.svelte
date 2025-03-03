@@ -43,7 +43,7 @@
     // we want to set the current day to True
     let dayNumber: number = new Date().getDay();
     //console.log("today is day: ", dayNumber);
-    console.log("toggle goalid: ", goalID);
+    //console.log("toggle goalid: ", goalID);
 
     let goal = data.goals.find((g) => g.id === goalID)!;
 
@@ -94,17 +94,6 @@
         //console.log("adding ",g.weeks[weekNbr][i].frequency, " actions for ", g.weeks[weekNbr][i].title );
       }
     }
-
-    /*console.log(
-      "goal: ",
-      g.title,
-      " total actions: ",
-      totalActions,
-      " done: ",
-      actionsDone,
-      " week: ",
-      weekNbr,
-    );*/
 
     let progress = (actionsDone / totalActions) * 100;
     return progress;

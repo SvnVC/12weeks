@@ -1,7 +1,14 @@
 <script lang="ts">
-    import { Card, Input, Button, Label, Fileupload } from "flowbite-svelte";
+    import {
+        Card,
+        Input,
+        Button,
+        Label,
+        Fileupload,
+        Toggle,
+    } from "flowbite-svelte";
     import Nav from "$lib/components/nav.svelte";
-    import { open } from "@tauri-apps/plugin-dialog";
+    import { open, message } from "@tauri-apps/plugin-dialog";
     import {
         readTextFile,
         writeTextFile,
@@ -9,166 +16,209 @@
         mkdir,
         exists,
     } from "@tauri-apps/plugin-fs";
-    import { onMount } from "svelte";
-    import type { Vision } from '$lib/types';
-    import { saveData } from "$lib/storage";
+    import { onMount} from "svelte";
+    import type { Vision } from "$lib/types";
+    import { loadData, saveData } from "$lib/storage";
+    import { appDataDir } from "@tauri-apps/api/path";
+    import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
     let jsonFilePath: string = "";
-    let message: string = "";
+    let errorMessage: string = "";
+    let useCustomStorageLocation = false;
+    let customStorageLocation:string = '';
+    let configContent: string = "";
+    let config = {
+        customStorageLocation:'',
+        useCustomStorageLocation:true
+    };
 
-    // Load saved path on mount
-    /*onMount(async () => {
+    async function loadConfig() {
         try {
-            const configContent = await readTextFile("config.json", {
+            configContent = await readTextFile("config.json", {
                 baseDir: BaseDirectory.AppData,
             });
-            const config = JSON.parse(configContent);
-            jsonFilePath = config.jsonFilePath || "";
+            config = JSON.parse(configContent);
         } catch (e) {
-            // If config.json doesn’t exist yet, leave path empty
-            jsonFilePath = "";
+            console.log(e);
+            
         }
-    });*/
+    }
 
+    onMount(async () => {
+        await loadConfig();
+        customStorageLocation = config.customStorageLocation;
+        useCustomStorageLocation = config.useCustomStorageLocation;
+        dir();
+    });
 
     
-    // Save the JSON file path
-    async function saveSettings() {
-
-        console.log('save - path: ',jsonFilePath);
-        if (!jsonFilePath) {
-            message = "Please select a valid JSON file path.";
-            return;
-        }
-
-        // check if our file is a json file
-
-        if (!jsonFilePath.toLowerCase().endsWith(".json")) {
-            message = "The file must have a .json extension.";
-            return;
-        }
-
-        // see if file exists
-        try {
-        if (await exists(jsonFilePath) === false) {
-            message = "the specified file does not exist.";
-            return;
-        }
-    } catch(e){
-        message = "Error reading file";
-        console.log(e);
-        return;
-    }
-
-    // if the file exists we need to try to read it and see if it contains the right data
-    const data = await readTextFile(jsonFilePath, {});
-    //console.log("reading data");
-    //console.log(data);
-
-    try {
-        console.log("checking validity of file")
-        const vision:Vision = JSON.parse(data);
-        console.log(vision);
-
-        const hasVision = typeof vision.vision === 'string';
-        const hasGoals = Array.isArray(vision.goals);
-        
-        if(!hasVision || !hasGoals){
-            message = 'File content not valid'
-            return;
-        }
-
-    } catch (e) {
-        console.log(e);
-    }
-
-    // si tout va bien jusqu'à ici, on va sauvegarder nos données dans notre fichier standard
-    await saveData(JSON.parse(data));
-
-    message = "Data imported successfully.";
-        //console.log('exists? : ',await exists(jsonFilePath));
-
-        /*try {
-            // Ensure the AppData directory exists
-            // recursive set to true means any intermediate directories will also be created
-            await mkdir("", {
-                baseDir: BaseDirectory.AppData,
-                recursive: true,
-            });
-            const config = { jsonFilePath };
-            await writeTextFile(
-                "config.json",
-                JSON.stringify(config, null, 2),
-                {
-                    baseDir: BaseDirectory.AppData,
-                },
-            );
-            message = "Settings saved successfully!";
-        } catch (e) {
-            message = "Error saving settings.";
-            console.log(e);
-        }*/
-    }
     let selectedFile: File | null = null;
-    let parsedContent:Vision |null = null;
+    let parsedContent: Vision | null = null;
 
-    async function handleFileChange(event:Event){
+    async function handleFileChange(event: Event) {
         //console.log("handle file change");
         //console.log(event.target);
         const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      selectedFile = input.files[0];
-      let fileContent = await selectedFile.text();
-        parsedContent = JSON.parse(fileContent);
+        if (input.files && input.files.length > 0) {
+            selectedFile = input.files[0];
+            let fileContent = await selectedFile.text();
+            parsedContent = JSON.parse(fileContent);
 
-        const hasVision = typeof parsedContent.vision === 'string';
-        const hasGoals = Array.isArray(parsedContent.goals);
-        
-        if(!hasVision || !hasGoals){
-            message = 'File content not valid'
-            parsedContent = null;
+            const hasVision = typeof parsedContent.vision === "string";
+            const hasGoals = Array.isArray(parsedContent.goals);
+
+            if (!hasVision || !hasGoals) {
+                errorMessage = "File content not valid";
+                parsedContent = null;
+                return;
+            }
+
+            // seems ok, let's save
+        }
+    }
+
+    async function saveImportedData() {
+        let newData: Vision = parsedContent!;
+
+        try {
+            console.log("checking validity of file");
+            
+
+            const hasVision = typeof newData.vision === "string";
+            const hasGoals = Array.isArray(newData.goals);
+
+            if (!hasVision || !hasGoals) {
+                errorMessage = "File content not valid";
+                return;
+            }
+        } catch (e) {
+            console.log(e);
+            errorMessage = "Can not read file contents";
             return;
         }
 
-        // seems ok, let's save
-        
-      
-    }
-
-    
-
-    }
-
-    async function saveImportedData(){
-        let newData:Vision = parsedContent!;
-
         await saveData(newData);
-        message = "Data imported successfully";
+        errorMessage = "Data imported successfully";
     }
+
+    let app_data_dir: string = "";
+    async function dir(): Promise<string> {
+        app_data_dir = await appDataDir();
+        console.log(app_data_dir);
+        return app_data_dir;
+    }
+
+    async function selectStorageLocation() {
+        const selected = await open({
+            directory: true,
+            multiple: false,
+            title: "Select Data Storage Location",
+        });
+        
+        if (typeof selected === "string") {
+            
+                        customStorageLocation = selected;
+            //errorMessage = "Storage location updated successfully!";
+        }
+    }
+
+    async function setCustomStoragePath(newPath:string){
+        // add new path to our config file
+        config.customStorageLocation = newPath;
+
+        await writeTextFile('config.json', JSON.stringify(config), {
+            baseDir: BaseDirectory.AppData
+        });
+
+    }
+
+    async function updateSettings(){
+
+        if(useCustomStorageLocation == true && customStorageLocation == ''){
+            await message('The custom storage location can not be empty.');
+            return;
+        }
+        config.useCustomStorageLocation = useCustomStorageLocation;
+        config.customStorageLocation = customStorageLocation;
+
+        // copy the existing data to the new file first
+        // we load it in memory
+        const data:Vision = await loadData();
+        
+        // we change the settings
+        await writeTextFile('config.json', JSON.stringify(config), {
+            baseDir: BaseDirectory.AppData
+        });
+        // and copy the data
+        await saveData(data);
+
+        errorMessage = "Settings saved successfully.";
+    }
+
 </script>
 
 <Nav />
 
-<main class="mx-auto p-6 min-h-screen">
+<main class="mx-auto p-6 min-h-screen space-y-5">
     <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Settings</h1>
 
-    <div>
-        <Label>Import data from file</Label>
-        <Input type="file" accept=".json" bind:value={jsonFilePath} on:change={handleFileChange} class="w-fit"/>
-        <Button color="blue" on:click={saveImportedData}>Import</Button>
-        <div class="justify-start m-5">
-        {#if message}
-                <p
-                    class="text-sm text-center w-fit"
-                    class:text-green-600={message.includes("success")}
-                    class:text-red-600={!message.includes("success")}
+    <div class="justify-start m-5">
+        {#if errorMessage}
+            <p
+                class="text-sm text-center w-fit"
+                class:text-green-600={errorMessage.includes("success")}
+                class:text-red-600={!errorMessage.includes("success")}
+            >
+                {errorMessage}
+            </p>
+        {/if}
+    </div>
+    <div class="bg-gray-50 p-6 space-y-5">
+        <h5 class="font-bold">Data storage</h5>
+
+        <Toggle
+            checked={useCustomStorageLocation}
+            bind:value={useCustomStorageLocation}
+            on:change={(e) => (useCustomStorageLocation = !useCustomStorageLocation)}
+            color="green">Custom storage location</Toggle
+        >
+
+        <div class="space-y-4">
+            {#if useCustomStorageLocation === false}
+                Using the default storage location.<br />
+                <span class="italic font-bold">{app_data_dir}</span>
+            {:else}
+            <div>
+            {#if customStorageLocation !== ''}
+            <span class="italic font-bold">{customStorageLocation}</span>
+            {:else}
+            <span class="text-red-500">No custom storage location defined.</span> 
+            {/if}
+        </div>
+            
+                <Button color="light" on:click={selectStorageLocation}
+                    >Select Storage location</Button
                 >
-                    {message}
-                </p>
             {/if}
         </div>
     </div>
 
-    
 
+    <div class="bg-gray-50 p-6 space-y-5">
+        <h5 class="font-bold">Import data from file</h5>
+
+        <div class="flex gap-4">
+        <Input
+            type="file"
+            accept=".json"
+            bind:value={jsonFilePath}
+            on:change={handleFileChange}
+            class="w-fit"
+        />
+        <Button color="blue" on:click={saveImportedData}>Import from file</Button>
+    </div>
+        
+    </div>
+
+    <Button color="green" class="w-full" on:click={updateSettings}>Update settings</Button>
 </main>
