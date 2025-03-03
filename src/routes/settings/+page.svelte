@@ -1,14 +1,7 @@
 <script lang="ts">
-    import {
-        Card,
-        Input,
-        Button,
-        Label,
-        Fileupload,
-        Toggle,
-    } from "flowbite-svelte";
+    import {Input, Button, Toggle } from "flowbite-svelte";
     import Nav from "$lib/components/nav.svelte";
-    import { open, message } from "@tauri-apps/plugin-dialog";
+    import { open, message, ask } from "@tauri-apps/plugin-dialog";
     import {
         readTextFile,
         writeTextFile,
@@ -20,7 +13,6 @@
     import type { Vision } from "$lib/types";
     import { loadData, saveData } from "$lib/storage";
     import { appDataDir } from "@tauri-apps/api/path";
-    import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
     let jsonFilePath: string = "";
     let errorMessage: string = "";
@@ -79,6 +71,16 @@
 
     async function saveImportedData() {
         let newData: Vision = parsedContent!;
+
+        if(parsedContent == null){
+            await message("No valid content");
+            return;
+        }
+
+        let userConsent = await ask("This will overwrite the 12weeksdata.json file. Are you sure ?");
+        if(userConsent == false){
+            return;
+        }
 
         try {
             console.log("checking validity of file");
