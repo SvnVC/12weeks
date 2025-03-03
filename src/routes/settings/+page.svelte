@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Card, Input, Button, Label, Fileupload } from "flowbite-svelte";
-    import Nav from "$lib/components/Nav.svelte";
+    import Nav from "$lib/components/nav.svelte";
     import { open } from "@tauri-apps/plugin-dialog";
     import {
         readTextFile,
