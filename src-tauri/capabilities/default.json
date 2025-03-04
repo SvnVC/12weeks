@@ -3,7 +3,7 @@
   "identifier": "default",
   "description": "Capability for the main window",
   "windows": [
-    "main"
+    "main", "*"
   ],
   "permissions": [
     "core:default",
@@ -18,15 +18,19 @@
     "fs:read-dirs",
     {
       "identifier": "fs:scope",
-      "allow": ["**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**"]
     },
     {
       "identifier": "fs:allow-read-text-file",
-      "allow": ["**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**"]
     },
     {
       "identifier": "fs:allow-write-text-file",
-      "allow": ["**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**"]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": ["$APPDATA", "$APPDATA/**", "**"]
     },
         
     "dialog:default"

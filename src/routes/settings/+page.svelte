@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Input, Button, Toggle } from "flowbite-svelte";
+    import { Input, Button, Toggle } from "flowbite-svelte";
     import Nav from "$lib/components/nav.svelte";
     import { open, message, ask } from "@tauri-apps/plugin-dialog";
     import {
@@ -9,7 +9,7 @@
         mkdir,
         exists,
     } from "@tauri-apps/plugin-fs";
-    import { onMount} from "svelte";
+    import { onMount } from "svelte";
     import type { Vision } from "$lib/types";
     import { loadData, saveData } from "$lib/storage";
     import { appDataDir } from "@tauri-apps/api/path";
@@ -17,11 +17,11 @@
     let jsonFilePath: string = "";
     let errorMessage: string = "";
     let useCustomStorageLocation = false;
-    let customStorageLocation:string = '';
+    let customStorageLocation: string = "";
     let configContent: string = "";
     let config = {
-        customStorageLocation:'',
-        useCustomStorageLocation:true
+        customStorageLocation: "",
+        useCustomStorageLocation: false,
     };
 
     async function loadConfig() {
@@ -32,7 +32,6 @@
             config = JSON.parse(configContent);
         } catch (e) {
             console.log(e);
-            
         }
     }
 
@@ -43,7 +42,6 @@
         dir();
     });
 
-    
     let selectedFile: File | null = null;
     let parsedContent: Vision | null = null;
 
@@ -72,19 +70,20 @@
     async function saveImportedData() {
         let newData: Vision = parsedContent!;
 
-        if(parsedContent == null){
+        if (parsedContent == null) {
             await message("No valid content");
             return;
         }
 
-        let userConsent = await ask("This will overwrite the 12weeksdata.json file. Are you sure ?");
-        if(userConsent == false){
+        let userConsent = await ask(
+            "This will overwrite the 12weeksdata.json file. Are you sure ?",
+        );
+        if (userConsent == false) {
             return;
         }
 
         try {
             console.log("checking validity of file");
-            
 
             const hasVision = typeof newData.vision === "string";
             const hasGoals = Array.isArray(newData.goals);
@@ -116,28 +115,25 @@
             multiple: false,
             title: "Select Data Storage Location",
         });
-        
+
         if (typeof selected === "string") {
-            
-                        customStorageLocation = selected;
+            customStorageLocation = selected;
             //errorMessage = "Storage location updated successfully!";
         }
     }
 
-    async function setCustomStoragePath(newPath:string){
+    async function setCustomStoragePath(newPath: string) {
         // add new path to our config file
         config.customStorageLocation = newPath;
 
-        await writeTextFile('config.json', JSON.stringify(config), {
-            baseDir: BaseDirectory.AppData
+        await writeTextFile("config.json", JSON.stringify(config), {
+            baseDir: BaseDirectory.AppData,
         });
-
     }
 
-    async function updateSettings(){
-
-        if(useCustomStorageLocation == true && customStorageLocation == ''){
-            await message('The custom storage location can not be empty.');
+    async function updateSettings() {
+        if (useCustomStorageLocation == true && customStorageLocation == "") {
+            await message("The custom storage location can not be empty.");
             return;
         }
         config.useCustomStorageLocation = useCustomStorageLocation;
@@ -145,18 +141,21 @@
 
         // copy the existing data to the new file first
         // we load it in memory
-        const data:Vision = await loadData();
-        
+        const data: Vision = await loadData();
+
+        await mkdir(await appDataDir(), {
+            recursive: true,
+        });
+
         // we change the settings
-        await writeTextFile('config.json', JSON.stringify(config), {
-            baseDir: BaseDirectory.AppData
+        await writeTextFile("config.json", JSON.stringify(config), {
+            baseDir: BaseDirectory.AppData,
         });
         // and copy the data
         await saveData(data);
 
         errorMessage = "Settings saved successfully.";
     }
-
 </script>
 
 <Nav />
@@ -181,7 +180,8 @@
         <Toggle
             checked={useCustomStorageLocation}
             bind:value={useCustomStorageLocation}
-            on:change={(e) => (useCustomStorageLocation = !useCustomStorageLocation)}
+            on:change={(e) =>
+                (useCustomStorageLocation = !useCustomStorageLocation)}
             color="green">Custom storage location</Toggle
         >
 
@@ -190,14 +190,18 @@
                 Using the default storage location.<br />
                 <span class="italic font-bold">{app_data_dir}</span>
             {:else}
-            <div>
-            {#if customStorageLocation !== ''}
-            <span class="italic font-bold">{customStorageLocation}</span>
-            {:else}
-            <span class="text-red-500">No custom storage location defined.</span> 
-            {/if}
-        </div>
-            
+                <div>
+                    {#if customStorageLocation !== ""}
+                        <span class="italic font-bold"
+                            >{customStorageLocation}</span
+                        >
+                    {:else}
+                        <span class="text-red-500"
+                            >No custom storage location defined.</span
+                        >
+                    {/if}
+                </div>
+
                 <Button color="light" on:click={selectStorageLocation}
                     >Select Storage location</Button
                 >
@@ -205,22 +209,24 @@
         </div>
     </div>
 
-
     <div class="bg-gray-50 p-6 space-y-5">
         <h5 class="font-bold">Import data from file</h5>
 
         <div class="flex gap-4">
-        <Input
-            type="file"
-            accept=".json"
-            bind:value={jsonFilePath}
-            on:change={handleFileChange}
-            class="w-fit"
-        />
-        <Button color="blue" on:click={saveImportedData}>Import from file</Button>
-    </div>
-        
+            <Input
+                type="file"
+                accept=".json"
+                bind:value={jsonFilePath}
+                on:change={handleFileChange}
+                class="w-fit"
+            />
+            <Button color="blue" on:click={saveImportedData}
+                >Import from file</Button
+            >
+        </div>
     </div>
 
-    <Button color="green" class="w-full" on:click={updateSettings}>Update settings</Button>
+    <Button color="green" class="w-full" on:click={updateSettings}
+        >Update settings</Button
+    >
 </main>
