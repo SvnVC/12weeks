@@ -54,11 +54,12 @@ export async function loadData(): Promise<Vision> {
     
     //console.log('Attempting to read from $APPDATA/app_data.json');
     //const json = await readTextFile(fileName, { baseDir: BaseDirectory.AppData });
-    const filePath = await getStorageFolderPath();
+    const filePath = await getStorageFolderPath()+'/'+fileName;
     //console.log("reading: ",filePath);
-    const json = await readTextFile(filePath+'/'+fileName);
+    const jsoncontent = await readTextFile(filePath);
+    //console.log('read: ',jsoncontent);
     //console.log('Successfully read from $APPDATA/app_data.json');
-    return JSON.parse(json) as Vision;
+    return JSON.parse(jsoncontent) as Vision;
   } catch (e) {
     //console.warn('Load error, returning default:', e);
     return { vision: '', created:'', updated:'', goals:[] };

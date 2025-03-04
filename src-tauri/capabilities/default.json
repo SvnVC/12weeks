@@ -18,19 +18,19 @@
     "fs:read-dirs",
     {
       "identifier": "fs:scope",
-      "allow": ["$APPDATA", "$APPDATA/**", "**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**", "**/*", "$LOCALDATA/**"]
     },
     {
       "identifier": "fs:allow-read-text-file",
-      "allow": ["$APPDATA", "$APPDATA/**", "**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**", "**/*", "$LOCALDATA/**"]
     },
     {
       "identifier": "fs:allow-write-text-file",
-      "allow": ["$APPDATA", "$APPDATA/**", "**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**", "**/*", "$LOCALDATA/**"]
     },
     {
       "identifier": "fs:allow-mkdir",
-      "allow": ["$APPDATA", "$APPDATA/**", "**"]
+      "allow": ["$APPDATA", "$APPDATA/**", "**", "**/*", "$LOCALDATA/**"]
     },
         
     "dialog:default"
