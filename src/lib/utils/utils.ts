@@ -10,15 +10,7 @@ export function extractCurrentWeek(goal:Goal): number {
     let started = new Date(goal.startDate);
     let now = new Date();
 
-    /*console.log(
-      "extracting week for goal ",
-      goal.title,
-      " - started: ",
-      started,
-      " - now: ",
-      now,
-    );*/
-
+    
     // Normalize to start of day (midnight) to avoid time-of-day discrepancies
     started.setHours(0, 0, 0, 0);
     now.setHours(0, 0, 0, 0);
@@ -42,4 +34,44 @@ export function extractCurrentWeek(goal:Goal): number {
 
     // Cap at 12 weeks
     return Math.min(Math.max(weekNumber, 1), 12);
+  }
+
+
+  // calculate the weekly scores
+  export function extractWeeklyScores(goal:Goal){
+
+    // create a 12 week array
+    let scores = Array.from({length:12}, (v,i)=> {
+
+      return {week: i, percentage:0};
+
+    });
+
+    // calculate percentage
+    for(let i=0; i< scores.length; i++){
+      let tasks = goal.weeks[i.toString()] || [] ;
+
+      let totalPercentage = 0;
+      let totalNumberOfTasks = 0;
+
+      tasks.forEach(t => {
+        let percentage = 0;
+
+        let todo = t.frequency;
+        let done = t.done.filter(t => t == true).length;
+
+        percentage = (done / todo) * 100;
+
+        totalNumberOfTasks += 1;
+        totalPercentage += percentage;
+        
+      });
+
+      scores[i].percentage = totalPercentage ? Math.round(totalPercentage / totalNumberOfTasks) : 0;
+      
+    }
+
+
+    return scores;
+
   }

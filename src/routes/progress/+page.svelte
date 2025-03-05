@@ -6,7 +6,7 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { PenSolid } from "flowbite-svelte-icons";
-  import { extractCurrentWeek } from "$lib/utils/utils";
+  import { extractCurrentWeek, extractWeeklyScores } from "$lib/utils/utils";
 
   let data: Vision = { vision: "", created: "", updated: "", goals: [] };
   let activeGoals: Goal[] = [];
@@ -84,14 +84,7 @@
     ];
   }
 
-  // Weekly scores for all 12 weeks
-  function getWeeklyScores(goal: Goal) {
-    return Array.from({ length: 12 }, (_, i) => {
-      const weekKey = i.toString();
-      const { percentage, tasks } = getWeekProgress(goal, weekKey)[0];
-      return { week: i, percentage, tasks };
-    });
-  }
+
 
   // Individual task percentage
   function getTaskPercentage(task: { frequency: string; done: boolean[] }) {
@@ -124,9 +117,8 @@
           <!-- Weekly Scores -->
           <div class="mb-6">
             <span class="text-sm font-medium text-gray-700">Weekly Scores</span>
-
             <div class="grid grid-cols-12 gap-2 mt-2">
-              {#each getWeeklyScores(goal) as { week, percentage, tasks } (week)}
+              {#each extractWeeklyScores(goal) as { week, percentage} (week)}
                 <div
                   class="text-center rounded-lg cursor-pointer"
                   class:bg-amber-100={week === currentWeeks[goal.id]}
