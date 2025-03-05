@@ -23,7 +23,7 @@
     { value: "archived", name: "Show archived" },
   ];
 
-  let selected:string = 'all'; // default set to all
+  let selected:string = 'active'; // default set to all
 
   async function loadNewData() {
 
@@ -103,7 +103,7 @@
 
 <main class="mx-auto p-6 min-h-screen">
   <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Progress</h1>
-  <p class="text-lg text-gray-600 mb-4 text-center">{data.vision}</p>
+  <p class="text-lg text-gray-600 mb-4 text-center bg-lime-100 p-6 rounded-lg">{data.vision}</p>
 
   <div class="flex justify-end">
   <Select class="w-fit mb-4" items={filterValues} bind:value={selected} on:change={loadNewData}/>
