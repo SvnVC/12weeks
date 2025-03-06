@@ -158,20 +158,24 @@
 
     <div class=" p-6">
         <h5 class="font-bold text-lg">Tactics</h5>
+        <ul class="list-disc list-inside">
         {#if goal}
             {#each goal.tactics as tactic}
-                {tactic.description}<br/>
+                <li>{tactic.description}</li>
             {/each}
         {/if}
+        </ul>
     </div>
 
     <div class="p-6">
         <h5 class="font-bold text-lg">Outcomes</h5>
+        <ul class="list-disc list-inside">
         {#if goal}
             {#each goal.outcomes as outcome}
-                {outcome.description}<br/>
+                <li>{outcome.description}</li>
             {/each}
         {/if}
+    </ul>
     </div>
 
 </div>
