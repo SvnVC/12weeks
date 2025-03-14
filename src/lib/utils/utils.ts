@@ -51,27 +51,21 @@ export function extractCurrentWeek(goal:Goal): number {
     for(let i=0; i< scores.length; i++){
       let tasks = goal.weeks[i.toString()] || [] ;
 
-      let totalPercentage = 0;
-      let totalNumberOfTasks = 0;
+      let totalExecuted = 0;
+      let totalTarget = 0;
 
-      tasks.forEach(t => {
-        let percentage = 0;
-
-        let todo = t.frequency;
-        let done = t.done.filter(t => t == true).length;
-
-        percentage = (done / todo) * 100;
-
-        totalNumberOfTasks += 1;
-        totalPercentage += percentage;
+      tasks.forEach(task => {
         
+        let done:number = task.done.filter(t => t == true).length;
+        totalExecuted += done;
+
+        totalTarget += Number(task.frequency);
+                
       });
 
-      scores[i].percentage = totalPercentage ? Math.round(totalPercentage / totalNumberOfTasks) : 0;
-      
+      let percentage = Math.round((totalExecuted / totalTarget) * 100);
+      scores[i].percentage = percentage ? percentage : 0;
     }
-
-
     return scores;
 
   }

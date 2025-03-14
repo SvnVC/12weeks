@@ -20,7 +20,7 @@
     CalendarEditSolid,
   } from "flowbite-svelte-icons";
 
-  import { extractCurrentWeek } from '$lib/utils/utils';
+  import { extractCurrentWeek, extractWeeklyScores } from '$lib/utils/utils';
     import Goalcard from "$lib/components/goalcard.svelte";
     import { json } from "@sveltejs/kit";
 
@@ -183,7 +183,7 @@
          id={goal.id} 
          status={goal.status}
          currentweek={extractCurrentWeek(goal)}
-         currentweekprogress={calculateWeeklyProgress(goal.id)}></goal-card>
+         currentweekprogress={extractWeeklyScores(goal)[extractCurrentWeek(goal)-1].percentage}></goal-card>
 
         {/each}
       </div>
