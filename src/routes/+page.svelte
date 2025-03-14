@@ -4,6 +4,7 @@
   import { loadData, saveData } from "$lib/storage";
   import type { Goal, Vision } from "$lib/types";
   import Nav from "$lib/components/nav.svelte";
+  import "$lib/components/goalcard.svelte";
   import {
     Card,
     Progressbar,
@@ -20,6 +21,8 @@
   } from "flowbite-svelte-icons";
 
   import { extractCurrentWeek } from '$lib/utils/utils';
+    import Goalcard from "$lib/components/goalcard.svelte";
+    import { json } from "@sveltejs/kit";
 
   let goals: Goal[] = [];
 
@@ -96,7 +99,28 @@
     }
 
     let progress = (actionsDone / totalActions) * 100;
-    return progress;
+    return Math.round(progress);
+  }
+
+  /**
+   * Toggle status in goalcard component
+   * @param goalID
+   * @param checked
+   */
+   async function toggleStatus(goalID: string) {
+    let goal = data.goals.find((g) => g.id === goalID)!;
+
+    if(goal.status == 'active'){
+      goal.status = 'planned';
+    } else {
+      goal.status = 'active';
+    }
+    
+    data.goals = data.goals.map((g) => (g.id === goalID ? goal : g));
+
+    await saveData(data);
+
+    filterGoals();
   }
 
   async function toggleGoalStatus(goalID: string, checked: boolean) {
@@ -152,50 +176,15 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each activeGoals as goal, index (goal.id)}
-          <Card class="min-w-[300px]">
-            <!-- Edit Button in Top-Right Corner -->
 
-            <h5
-              class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              {goal.title}
-            </h5>
+         <goal-card 
+         onchange={() => {toggleStatus(goal.id)}} 
+         title={goal.title} 
+         id={goal.id} 
+         status={goal.status}
+         currentweek={extractCurrentWeek(goal)}
+         currentweekprogress={calculateWeeklyProgress(goal.id)}></goal-card>
 
-            <p
-              class="font-normal text-gray-700 dark:text-gray-400 leading-tight"
-            ></p>
-            Week {extractCurrentWeek(goal)} / 12
-            <Progressbar
-              progress={(extractCurrentWeek(goal) / 12) * 100}
-              progressClass="bg-lime-600 dark:bg-lime-400"
-            />
-
-            This week's progress
-            <Progressbar
-              progress={calculateWeeklyProgress(goal.id)}
-              progressClass="bg-lime-600 dark:bg-lime-400"
-            />
-
-            <div class="flex items-center justify-between mt-6">
-              <Button
-                class="w-fit"
-                color="yellow"
-                href="/goals/{goal.id}/edit"
-                pill><PenSolid class="w-4 h-4" /></Button
-              >
-              <Button size="sm" color="blue" href="/goals/{goal.id}/plan" pill
-                ><CalendarEditSolid class="w-4 h-4" /></Button
-              >
-              <Toggle
-                checked={goal.status === "active"}
-                on:change={(e) => toggleGoalStatus(goal.id, e.target.checked)}
-                size="small"
-                color="green"
-              >
-                <span class="text-sm text-gray-700 dark:text-gray-400"> </span>
-              </Toggle>
-            </div>
-          </Card>
         {/each}
       </div>
     </AccordionItem>
@@ -205,48 +194,13 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each plannedGoals as goal, index (goal.id)}
-          <Card class="min-w-[300px]">
-            <h5
-              class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              {goal.title}
-            </h5>
-
-            <p
-              class="font-normal text-gray-700 dark:text-gray-400 leading-tight"
-            ></p>
-            Week {extractCurrentWeek(goal)} / 12
-            <Progressbar
-              progress={(extractCurrentWeek(goal) / 12) * 100}
-              progressClass="bg-lime-600 dark:bg-lime-400"
-            />
-
-            This week's progress
-            <Progressbar
-              progress="60"
-              progressClass="bg-lime-600 dark:bg-lime-400"
-            />
-
-            <div class="flex items-center justify-between mt-6">
-              <Button
-                class="w-fit"
-                color="yellow"
-                href="/goals/{goal.id}/edit"
-                pill><PenSolid class="w-4 h-4" /></Button
-              >
-              <Button size="sm" color="blue" href="/goals/{goal.id}/plan" pill
-                ><CalendarEditSolid class="w-4 h-4" /></Button
-              >
-              <Toggle
-                checked={goal.status === "active"}
-                on:change={(e) => toggleGoalStatus(goal.id, e.target.checked)}
-                size="small"
-                color="green"
-              >
-                <span class="text-sm text-gray-700 dark:text-gray-400"> </span>
-              </Toggle>
-            </div>
-          </Card>
+          <goal-card 
+         onchange={() => {toggleStatus(goal.id)}} 
+         title={goal.title} 
+         id={goal.id} 
+         status={goal.status}
+         currentweek={extractCurrentWeek(goal)}
+         currentweekprogress={calculateWeeklyProgress(goal.id)}></goal-card>
         {/each}
       </div>
     </AccordionItem>
@@ -256,48 +210,13 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each archivedGoals as goal, index (goal.id)}
-          <Card class="min-w-[300px]">
-            <h5
-              class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              {goal.title}
-            </h5>
-
-            <p
-              class="font-normal text-gray-700 dark:text-gray-400 leading-tight"
-            ></p>
-            Week {extractCurrentWeek(goal)} / 12
-            <Progressbar
-              progress={(extractCurrentWeek(goal) / 12) * 100}
-              progressClass="bg-lime-600 dark:bg-lime-400"
-            />
-
-            This week's progress
-            <Progressbar
-              progress="60"
-              progressClass="bg-lime-600 dark:bg-lime-400"
-            />
-
-            <div class="flex items-center justify-between mt-6">
-              <Button
-                class="w-fit"
-                color="yellow"
-                href="/goals/{goal.id}/edit"
-                pill><PenSolid class="w-4 h-4" /></Button
-              >
-              <Button size="sm" color="blue" href="/goals/{goal.id}/plan" pill
-                ><CalendarEditSolid class="w-4 h-4" /></Button
-              >
-              <Toggle
-                checked={goal.status === "active"}
-                on:change={(e) => toggleGoalStatus(goal.id, e.target.checked)}
-                size="small"
-                color="green"
-              >
-                <span class="text-sm text-gray-700 dark:text-gray-400"> </span>
-              </Toggle>
-            </div>
-          </Card>
+        <goal-card 
+        onchange={() => {toggleStatus(goal.id)}} 
+        title={goal.title} 
+        id={goal.id} 
+        status={goal.status}
+        currentweek={extractCurrentWeek(goal)}
+        currentweekprogress={calculateWeeklyProgress(goal.id)}></goal-card>
         {/each}
       </div>
     </AccordionItem>

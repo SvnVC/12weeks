@@ -18,6 +18,9 @@ const config = {
     }
     
   },
+  compilerOptions: {
+    customElement: true // Enable custom element compilation globally
+  }
   
 };
 
