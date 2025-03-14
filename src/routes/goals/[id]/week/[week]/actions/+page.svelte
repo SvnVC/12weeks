@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Vision, Goal, Task } from '$lib/types';
-    import { Card, Checkbox, Button } from 'flowbite-svelte';
+    import { Card, Checkbox, Button, Table, TableBody, TableBodyRow, TableBodyCell } from 'flowbite-svelte';
     import Nav from '$lib/components/nav.svelte';
     import { page } from '$app/stores';
     import { loadData, saveData } from '$lib/storage';
@@ -45,14 +45,16 @@
     </h1>
   
     {#if goal && goal.weeks[week]?.length > 0}
-     
-        <div class="space-y-6">
-          {#each goal.weeks[week] as task (task.id)}
-         
-            <div class="space-y-2">
-              <h2 class="text-lg font-semibold text-gray-900">{task.title || 'Unnamed Task'} - {task.done.filter(t => t === true).length}/{task.frequency}</h2>
-              <div class="grid grid-cols-7 gap-2">
-                {#each ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as day, i}
+
+    <Table>
+
+    
+    {#each goal.weeks[week] as task (task.id)}
+    <TableBodyRow>
+      <TableBodyCell>{task.title}</TableBodyCell>
+      <TableBodyCell>
+        <div class="flex justify-between">
+        {#each ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as day, i}
                   <div class="flex flex-col items-center">
                     <span class="text-xs text-gray-600">{day}</span>
                     
@@ -65,11 +67,13 @@
                     />
               
                   </div>
-                {/each}
-              </div>
-            </div>
-          {/each}
-        </div>
+                {/each}</div>
+      </TableBodyCell>
+    </TableBodyRow>
+    {/each}
+  </Table>
+     
+        
         <Button color="blue" class="mt-6 w-full" on:click={saveAndReturn}>Back to Progress</Button>
         {#if message}
           <p class="text-sm text-center text-green-600 mt-2">{message}</p>
