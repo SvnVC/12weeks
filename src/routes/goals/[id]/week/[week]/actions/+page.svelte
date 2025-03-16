@@ -51,7 +51,7 @@
     
     {#each goal.weeks[week] as task (task.id)}
     <TableBodyRow>
-      <TableBodyCell>{task.title}</TableBodyCell>
+      <TableBodyCell>{task.title}  ({task.done.filter(t => t === true).length} / {task.frequency})</TableBodyCell>
       <TableBodyCell>
         <div class="flex justify-between">
         {#each ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as day, i}
