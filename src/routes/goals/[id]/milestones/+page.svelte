@@ -287,7 +287,7 @@
             const sunday = new Date(startDate);
 
             // Format the week range
-            const weekRange = `${monday.toDateString()} - ${sunday.toDateString()}`;
+            const weekRange = `${String(monday.getDate()).padStart(2,'0')}/${String(monday.getMonth()).padStart(2,'0')} - ${String(sunday.getDate()).padStart(2,'0')}/${String(sunday.getMonth()).padStart(2,'0')}`;
             weekDates.push(weekRange);
 
             // Move to next Monday
@@ -331,7 +331,8 @@
                                             {#each outcome.milestones as milestone, idx}
                                                 <TableBodyRow>
                                                     <TableBodyCell
-                                                        >W{milestone.week} ({weekDates[idx]})</TableBodyCell
+                                                    class="w-1/2"
+                                                        >W{milestone.week}<br/> ({weekDates[idx]})</TableBodyCell
                                                     >
                                                     <TableBodyCell
                                                         ><NumberInput
