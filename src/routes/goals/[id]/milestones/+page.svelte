@@ -28,7 +28,7 @@
         TableBodyRow,
         TableBodyCell,
     } from "flowbite-svelte";
-    import { CirclePlusSolid, CircleMinusSolid } from "flowbite-svelte-icons";
+    import { CaretLeftSolid } from "flowbite-svelte-icons";
     import { extractWeeklyScores } from "$lib/utils/utils";
     let goalID: string = page.params.id;
 
@@ -269,6 +269,7 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
         Milestones
     </h1>
+    <Button color="alternative" on:click={()=>history.back()}><CaretLeftSolid/> Back</Button>
 
     {#if goal}
         {#if goal.outcomes.length == 0}
