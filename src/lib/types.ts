@@ -20,7 +20,6 @@ export interface Goal {
   export interface Outcome{
     id: string;
     description: string;
-    startValue:number;
     targetValue: number;
     milestones:Milestone[];
     result: string;

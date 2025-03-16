@@ -94,7 +94,8 @@
         data.goals = data.goals.map((g) => (g.id === goalID ? goal : g));
 
         await saveData(data);
-        goto("/progress");
+        // go back to previous page
+        history.back();
     }
 
     async function updateDataWithoutRedirect() {

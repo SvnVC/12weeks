@@ -31,7 +31,7 @@ today.setMonth(today.getMonth()+1);
     status: "planned",
     tactics: [{ id: crypto.randomUUID(), description: "" }],
     outcomes: [
-      { id: crypto.randomUUID(), description: "", result: "", done: false, startValue:0, targetValue:0, milestones:[] },
+      { id: crypto.randomUUID(), description: "", result: "", done: false, targetValue:0, milestones:[] },
     ],
   };
 
@@ -118,10 +118,7 @@ today.setMonth(today.getMonth()+1);
               <Input bind:value={outcome.description} placeholder="e.g. make 10 sales"></Input>
               
             </div>
-            <div class="w-1/5 pl-3">
-              <Label>Starting value</Label>
-              <NumberInput bind:value={outcome.startValue} placeholder="Start Value"/>
-            </div>
+            
             <div class="w-1/5 pl-3">
               <Label>Target value</Label>
               <NumberInput bind:value={outcome.targetValue}/>
