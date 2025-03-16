@@ -33,6 +33,9 @@
   let plannedGoals: Goal[] = [];
   let archivedGoals: Goal[] = [];
 
+  // js gives back Sunday as 0, Monday as 1,... We want Monday to be the first day.
+  let currentDayIndex:number = (new Date().getDay() +6) % 7;
+
   onMount(async () => {
     data = await loadData();
     goals = data.goals;
@@ -43,9 +46,10 @@
   
   async function handleTaskToggle(goalID: string, taskID: string) {
     // update the task dataset.
+    console.log('handle task toggle');
     // the done is an array of 7 booleans, each representing the day of the week.
     // we want to set the current day to True
-    let dayNumber: number = new Date().getDay();
+    
     //console.log("today is day: ", dayNumber);
     //console.log("toggle goalid: ", goalID);
 
@@ -54,9 +58,9 @@
     let task = goal.weeks[extractCurrentWeek(goal) - 1].find(
       (t) => t.id === taskID,
     )!;
-    //console.log("task: ", task);
+    console.log("task: ", task);
 
-    task.done[dayNumber - 1] = true;
+    task.done[currentDayIndex] = true;
 
     // rebuild the data
     goal.weeks[extractCurrentWeek(goal) - 1] = goal.weeks[
@@ -68,7 +72,7 @@
     // save
 
     await saveData(data);
-    // console.log("save data");
+     console.log("save data");
 
     filterGoals();
   }
@@ -154,7 +158,7 @@
     <div class="mb-6 ml-6 bg-orange-50 p-4">
       {#each goal.weeks[(extractCurrentWeek(goal) - 1).toString()] as task, taskIndex}
       <!-- date.getToday() returns 0 (SUnday) to 6 (Saturday). As we want Monday to be the first day, we add 6 and modulo 7 to transform-->
-        {#if task.done.filter((item) => item === true).length < task.frequency && task.done[(new Date().getDay() +6) % 7] == false}
+        {#if task.done.filter((item) => item === true).length < task.frequency && task.done[currentDayIndex] == false}
           <div class="flex justify-start space-x-3 items-center">
             <div class="">
               <Checkbox on:change={() => handleTaskToggle(goal.id, task.id)} />
