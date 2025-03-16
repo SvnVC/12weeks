@@ -57,9 +57,15 @@ export function extractCurrentWeek(goal:Goal): number {
       tasks.forEach(task => {
         
         let done:number = task.done.filter(t => t == true).length;
-        totalExecuted += done;
+        let target:number = Number(task.frequency);
 
-        totalTarget += Number(task.frequency);
+        // avoid when things are overdone. We allow maximum the target value
+        if (done > target){
+          done = target;
+        }
+
+        totalExecuted += done;
+        totalTarget += target;
                 
       });
 

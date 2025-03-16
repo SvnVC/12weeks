@@ -303,6 +303,7 @@
                                                             bind:value={
                                                                 milestone.value
                                                             }
+                                                            min=0
                                                             on:change={updateDataWithoutRedirect}
 
                                                         ></NumberInput></TableBodyCell
