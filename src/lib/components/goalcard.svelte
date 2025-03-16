@@ -2,7 +2,7 @@
 
 <script lang="ts">
    import {Card, Progressbar, Button, Toggle} from 'flowbite-svelte';
-   import {CalendarEditSolid, PenSolid} from 'flowbite-svelte-icons';
+   import {CalendarEditSolid, PenSolid, ChartLineUpOutline} from 'flowbite-svelte-icons';
   
   
 // example here https://svelte.dev/playground/untitled?version=5.23.0#H4sIAAAAAAAAE41Ry2rDMBD8FSECtqkTt1fHFpSSL-ix7sFRNkTEXglrnTYY_3uRlDgxTaEHIfYxs7szA9-rBizPPwZOZwM89wmecqxbF70as7InaMjltrWFR3mpkQDJ8pwXVnbKkKiwItUa3RGLVtk7gTHQXRDR2lXda4CY1D0SK9nCUk0QPyfrCovsRoNFe17aQOAwGncgO2gBqRzihJXiQrEs2csYOhQ-7HgKHaLIbpRhhBG-I2eD_8ciM4KnnOCbeE5dD2P6h0Dz0-Yi_arNhPLJXBtSGi2TvSXdbpqwdsXvjuYsC1veabvvUTog2ylrapKH2G2XsMFLS4uDthQnq2t1cwKkGOGLvYU5PvaQxLsxOkPmsm97Io1Mo2yUPF6VnOZFkw1RMoopKLKAE_9gmGxyDFMwMcwN-Bx_ABXQWmOtAgAA
@@ -64,6 +64,9 @@ function dispatch(type){
       <Button size="sm" color="blue" href="/goals/{props.id}/plan" pill
         ><CalendarEditSolid class="w-4 h-4" /></Button
       >
+
+      <Button size="sm" color="light" pill href="/goals/{props.id}/milestones"><ChartLineUpOutline/></Button>
+
       <Toggle
         checked={props.status === "active"}
         on:change={() => dispatch('change')}
