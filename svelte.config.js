@@ -14,7 +14,8 @@ const config = {
         '/goals/a52f9871-e539-4028-ad2d-00576aea53a7/edit', 
         '/goals/a52f9871-e539-4028-ad2d-00576aea53a7/plan',
         '/plan/a52f9871-e539-4028-ad2d-00576aea53a7',
-      '/dashboard', '/plan', '/review', '/goals/a52f9871-e539-4028-ad2d-00576aea53a7/week/1/actions',]
+      '/dashboard', '/plan', '/review', '/goals/a52f9871-e539-4028-ad2d-00576aea53a7/week/1/actions',
+    "/goals/a52f9871-e539-4028-ad2d-00576aea53a7/milestones"]
     }
     
   },
