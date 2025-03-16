@@ -23,6 +23,7 @@
   import { extractCurrentWeek, extractWeeklyScores } from '$lib/utils/utils';
     import Goalcard from "$lib/components/goalcard.svelte";
     import { json } from "@sveltejs/kit";
+    import { getToday } from "$lib/data";
 
   let goals: Goal[] = [];
 
@@ -152,8 +153,8 @@
 
     <div class="mb-6 ml-6 bg-orange-50 p-4">
       {#each goal.weeks[(extractCurrentWeek(goal) - 1).toString()] as task, taskIndex}
-      
-        {#if task.done.filter((item) => item === true).length < task.frequency && task.done[new Date().getDay() - 1] == false}
+      <!-- date.getToday() returns 0 (SUnday) to 6 (Saturday). As we want Monday to be the first day, we add 6 and modulo 7 to transform-->
+        {#if task.done.filter((item) => item === true).length < task.frequency && task.done[(new Date().getDay() +6) % 7] == false}
           <div class="flex justify-start space-x-3 items-center">
             <div class="">
               <Checkbox on:change={() => handleTaskToggle(goal.id, task.id)} />
