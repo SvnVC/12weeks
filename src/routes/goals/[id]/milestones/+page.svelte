@@ -66,6 +66,7 @@
         }
 
         getActionOptions();
+        getWeekDates();
     });
 
     let currentOutcome: Outcome | null;
@@ -263,6 +264,38 @@
             },
         };
     }
+
+    // get the dates to show per week
+    let weekDates: string[] = [];
+
+    function getWeekDates() {
+        weekDates = [];
+
+        let startDate = new Date(goal.startDate);
+
+        // Adjust to the previous Monday if not already on Monday
+        const dayIndex = (startDate.getDay() + 6) % 7; // Monday=0, Sunday=6
+        startDate.setDate(startDate.getDate() - dayIndex);
+
+        // Generate 12 weeks
+        for (let i = 0; i < 12; i++) {
+            // Store Monday's date
+            const monday = new Date(startDate);
+
+            // Move to Sunday (6 days later)
+            startDate.setDate(startDate.getDate() + 6);
+            const sunday = new Date(startDate);
+
+            // Format the week range
+            const weekRange = `${monday.toDateString()} - ${sunday.toDateString()}`;
+            weekDates.push(weekRange);
+
+            // Move to next Monday
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        return weekDates; // Return the array if needed
+    }
 </script>
 
 <Nav />
@@ -270,7 +303,9 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
         Milestones
     </h1>
-    <Button color="alternative" on:click={()=>history.back()}><CaretLeftSolid/> Back</Button>
+    <Button color="alternative" on:click={() => history.back()}
+        ><CaretLeftSolid /> Back</Button
+    >
 
     {#if goal}
         {#if goal.outcomes.length == 0}
@@ -293,17 +328,17 @@
                                             <TableHeadCell>Value</TableHeadCell>
                                         </TableHead>
                                         <TableBody>
-                                            {#each outcome.milestones as milestone}
+                                            {#each outcome.milestones as milestone, idx}
                                                 <TableBodyRow>
                                                     <TableBodyCell
-                                                        >W{milestone.week}</TableBodyCell
+                                                        >W{milestone.week} ({weekDates[idx]})</TableBodyCell
                                                     >
                                                     <TableBodyCell
                                                         ><NumberInput
                                                             bind:value={
                                                                 milestone.value
                                                             }
-                                                            min=0
+                                                            min="0"
                                                             on:change={updateDataWithoutRedirect}
 
                                                         ></NumberInput></TableBodyCell
