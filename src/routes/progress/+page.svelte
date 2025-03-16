@@ -5,7 +5,7 @@
   import { loadData } from "$lib/storage";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { PenSolid } from "flowbite-svelte-icons";
+  import { PenSolid, ChartLineUpOutline } from "flowbite-svelte-icons";
   import { extractCurrentWeek, extractWeeklyScores } from "$lib/utils/utils";
 
   let data: Vision = { vision: "", created: "", updated: "", goals: [] };
@@ -112,7 +112,10 @@
     <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {#each goalsToDisplay as goal (goal.id)}
         <Card class="p-6  min-w-[350px] ">
-          <h2 class="text-xl font-semibold text-gray-800 mb-2">{goal.title}</h2>
+          <div class="flex justify-between">
+          <span class="text-xl font-semibold text-gray-800 mb-2">{goal.title}</span>
+          <Button color="light" pill href="/goals/{goal.id}/milestones"><ChartLineUpOutline/></Button>
+        </div>
 
           <!-- Weekly Scores -->
           <div class="mb-6">

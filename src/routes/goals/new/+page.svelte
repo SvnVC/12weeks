@@ -4,7 +4,7 @@
   import { savePlan, loadPlan } from "$lib/data";
   import { loadData, saveData } from "$lib/storage";
   import Nav from "$lib/components/nav.svelte";
-  import { Label, Input, Textarea, Button } from "flowbite-svelte";
+  import { Label, Input, Textarea, Button, NumberInput } from "flowbite-svelte";
   import { CirclePlusSolid, CircleMinusSolid } from 'flowbite-svelte-icons';
   import type { Goal, Tactic, Vision } from "$lib/types";
 
@@ -18,17 +18,20 @@
     originalData = await loadData();
   });
 
+let today = new Date();
+today.setMonth(today.getMonth()+1);
+
   let newGoal: Goal = {
     id: crypto.randomUUID(),
     title: "",
     description: "",
-    startDate: "",
+    startDate: today.toISOString(),
     endDate: "",
     weeks: { "1": [] },
     status: "planned",
     tactics: [{ id: crypto.randomUUID(), description: "" }],
     outcomes: [
-      { id: crypto.randomUUID(), description: "", result: "", done: false },
+      { id: crypto.randomUUID(), description: "", result: "", done: false, startValue:0, targetValue:0, milestones:[] },
     ],
   };
 
@@ -55,7 +58,7 @@
   function addOutcome() {
     newGoal.outcomes = [
       ...newGoal.outcomes,
-      { id: crypto.randomUUID(), description: "", result: "", done: false },
+      { id: crypto.randomUUID(), description: "", result: "", done: false, startValue:0, targetValue:0, milestones:[] },
     ];
   }
 
@@ -82,35 +85,46 @@
       <Textarea bind:value={newGoal.description} />
     </div>
 
-    <div class="flex">
-      <div class="w-1/2">
-        <div class="flex justify-between">
-          <Label>Tactics</Label>
-          <Button on:click={addTactic}><CirclePlusSolid color="green"/></Button>
-        </div>
-        
-        {#each newGoal.tactics as tactic, index}
+    <div class="mb-6">
+      <div class="flex justify-between">
+        <Label>Tactics</Label>
+        <Button on:click={addTactic}><CirclePlusSolid color="green"/></Button>
+      </div>
+
+      {#each newGoal.tactics as tactic, index}
           <div class="flex">
-            <div class="w-4/5">
+            <div class="w-3/5">
               <Input bind:value={tactic.description}></Input>
             </div>
-            <div class="w-1/5">
+            <div class="w-2/5">
               <Button on:click={() => removeTactic(index)}><CircleMinusSolid color="red"/></Button
               >
             </div>
           </div>
         {/each}
 
-      </div>
-      <div class="w-1/2">
-        <div class="flex justify-between">
+    </div>
+
+    <div class="mb-6">
+      <div class="flex justify-between">
         <Label>Measurable outcomes</Label>
         <Button on:click={addOutcome}><CirclePlusSolid color="green"/></Button>
       </div>
-        {#each newGoal.outcomes as outcome, index}
-          <div class="flex">
-            <div class="w-4/5">
-              <Input bind:value={outcome.description}></Input>
+
+      {#each newGoal.outcomes as outcome, index}
+          <div class="flex mt-2">
+            <div class="w-2/5">
+              <Label>Description</Label>
+              <Input bind:value={outcome.description} placeholder="e.g. make 10 sales"></Input>
+              
+            </div>
+            <div class="w-1/5 pl-3">
+              <Label>Starting value</Label>
+              <NumberInput bind:value={outcome.startValue} placeholder="Start Value"/>
+            </div>
+            <div class="w-1/5 pl-3">
+              <Label>Target value</Label>
+              <NumberInput bind:value={outcome.targetValue}/>
             </div>
             <div class="w-1/5">
               <Button on:click={() => removeOutcome(index)}
@@ -119,9 +133,9 @@
             </div>
           </div>
         {/each}
-
-      </div>
     </div>
+
+    
 
     <Button class="mt-6 w-full" color="green" on:click={saveNewGoal}>Save</Button>
   </div>

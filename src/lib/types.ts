@@ -20,8 +20,17 @@ export interface Goal {
   export interface Outcome{
     id: string;
     description: string;
+    startValue:number;
+    targetValue: number;
+    milestones:Milestone[];
     result: string;
     done: boolean;
+  }
+
+  export interface Milestone {
+    id: string;
+    week:number; // week 1 to 12
+    value:number;
   }
 
   export interface Week {
