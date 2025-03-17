@@ -47,7 +47,7 @@
         //console.log(goal.outcomes);
         outcomes = goal.outcomes;
 
-        console.log("outcomes: ", outcomes);
+        //console.log("outcomes: ", outcomes);
         // for backwards compatibility, the original outcomes didn't have a field milestones
         outcomes.forEach((outcome) => {
             if (outcome.milestones == undefined) {
@@ -112,7 +112,7 @@
      */
 
     function getActionOptions() {
-        console.log("action options ");
+        //console.log("action options ");
         // create series for the weekly goals.
         let weeklyScores = extractWeeklyScores(goal);
 
@@ -272,22 +272,26 @@
         weekDates = [];
 
         let startDate = new Date(goal.startDate);
+        
 
         // Adjust to the previous Monday if not already on Monday
         const dayIndex = (startDate.getDay() + 6) % 7; // Monday=0, Sunday=6
         startDate.setDate(startDate.getDate() - dayIndex);
 
+        
+
         // Generate 12 weeks
         for (let i = 0; i < 12; i++) {
             // Store Monday's date
             const monday = new Date(startDate);
+            //console.log('monday: ',monday);
 
             // Move to Sunday (6 days later)
             startDate.setDate(startDate.getDate() + 6);
             const sunday = new Date(startDate);
 
             // Format the week range
-            const weekRange = `${String(monday.getDate()).padStart(2,'0')}/${String(monday.getMonth()).padStart(2,'0')} - ${String(sunday.getDate()).padStart(2,'0')}/${String(sunday.getMonth()).padStart(2,'0')}`;
+            const weekRange = `${String(monday.getDate()).padStart(2,'0')}/${String(monday.getMonth()+1).padStart(2,'0')} - ${String(sunday.getDate()).padStart(2,'0')}/${String(sunday.getMonth()+1).padStart(2,'0')}`;
             weekDates.push(weekRange);
 
             // Move to next Monday
