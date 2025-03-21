@@ -27,6 +27,8 @@
         data.goals = data.goals.map(g => (g.id === goalId ? goal : g));
         await saveData(data);
         message = 'Action updated!';
+        // trigger reactive
+        goal = data.goals.find(g => g.id === goalId);
         setTimeout(() => (message = ''), 2000); // Clear message after 2s
       }
     }
